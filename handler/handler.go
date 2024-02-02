@@ -19,8 +19,11 @@ func CreateHandler() *Handler {
 		Handler: mux,
 	}
 
-	mux.HandleFunc("/ping", handler.PingHandler).Methods("GET") // Ping Check
-	mux.HandleFunc("/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.InferHandler).Methods("POST")
+	mux.HandleFunc("/ping", handler.pingHandler).Methods("GET") // Ping Check
+	mux.HandleFunc("/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferHandler).Methods("POST")
+	mux.HandleFunc("/repository/index", handler.repositoryIndexHandler).Methods("POST")
+	mux.HandleFunc("/register/token", handler.registerTokenHandler).Methods("POST")
+	mux.HandleFunc("/request/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.validateTokenAndInferenceHandler).Methods("POST")
 
 	return handler
 }

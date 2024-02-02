@@ -1,0 +1,32 @@
+[
+    {
+        "name":"decoder",
+        "version":"1",
+        "state":"READY"
+    },
+    {
+        "name":"densenet_onnx",
+        "version":"1",
+        "state":"READY"
+    },
+    {
+        "name":"encoder",
+        "version":"1",
+        "state":"READY"
+    },
+    {
+        "name":"post_quant_conv",
+        "version":"1",
+        "state":"READY"
+    },
+    {
+        "name":"stable_diffusion",
+        "version":"1",
+        "state":"READY"
+    },
+    {
+        "name":"unet",
+        "version":"1",
+        "state":"READY"
+    }
+]

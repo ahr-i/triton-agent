@@ -1,17 +1,23 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/ahr-i/triton-agent/handler"
+	"github.com/ahr-i/triton-agent/schedulerCommunicator/healthPinger"
+	"github.com/ahr-i/triton-agent/schedulerCommunicator/taskTokenManager"
 	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/corsController"
-	"github.com/ahr-i/triton-agent/src/p2p"
 	"github.com/urfave/negroni"
 )
 
 func Init() {
-	go p2p.Enter()
+	log.Println("* (System) Initialize the agent.")
+
+	taskTokenManager.Init()
+
+	go healthPinger.Enter()
 }
 
 func main() {
@@ -26,5 +32,6 @@ func main() {
 	handler.UseHandler(mux)
 
 	// HTTP Server Start
+	log.Println("* (System) HTTP server start.")
 	http.ListenAndServe(":"+setting.ServerPort, handler)
 }
