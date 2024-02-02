@@ -1,4 +1,4 @@
-package p2p
+package healthPinger
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ type RequestData struct {
 	Address string `json:"address"`
 }
 
-func postAlive(address string) {
+func postAlive() {
 	jsonData, err := json.Marshal(RequestData{Address: address})
 	if err != nil {
 		panic(err)
@@ -22,7 +22,7 @@ func postAlive(address string) {
 
 	resp, _ := http.Post("http://"+setting.SchedulerUrl+"/alive", "application/json", bytes.NewBuffer(jsonData))
 	if resp == nil || resp.StatusCode != http.StatusOK {
-		log.Println("There Is No Scheduler.")
+		log.Println("*** (ERROR) There is no scheduler.")
 
 		os.Exit(1)
 	}

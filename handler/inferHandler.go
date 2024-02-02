@@ -25,7 +25,7 @@ type TritonOutput struct {
 	} `json:"outputs"`
 }
 
-func (h *Handler) InferHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) inferHandler(w http.ResponseWriter, r *http.Request) {
 	_, fp, _, _ := runtime.Caller(1)
 
 	vars := mux.Vars(r)
@@ -41,17 +41,18 @@ func (h *Handler) InferHandler(w http.ResponseWriter, r *http.Request) {
 	/* */
 	body, err := ioutil.ReadAll(r.Body)
 
+	log.Println("* (System) Request: ▽▽▽▽▽▽▽▽▽▽")
 	log.Println(string(body))
 	/* */
 
 	req, err_ := http.NewRequest("POST", url, bytes.NewBuffer(body))
-	errController.ErrorCheck(err_, "HTTP REQUEST ERROR", fp)
+	errController.ErrorCheckHard(err_, "HTTP REQUEST ERROR", fp)
 	req.Header.Set("Content-Type", "application/json")
 
 	// Triton Server Response
 	client := &http.Client{}
 	resp, err_ := client.Do(req)
-	errController.ErrorCheck(err_, "HTTP RESPONSE ERROR", fp)
+	errController.ErrorCheckHard(err_, "HTTP RESPONSE ERROR", fp)
 	defer resp.Body.Close()
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
