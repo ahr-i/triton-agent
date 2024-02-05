@@ -30,3 +30,7 @@ func ErrorCheck(err error, msg string) {
 	log.Println("Msg:", msg)
 	log.Println("===========================================")
 }
+
+func ErrorMessage(err error) {
+	log.Println("** (ERROR)", err)
+}
