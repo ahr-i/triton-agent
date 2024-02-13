@@ -21,6 +21,7 @@ func CreateHandler() *Handler {
 
 	mux.HandleFunc("/ping", handler.pingHandler).Methods("GET") // Ping Check
 	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferHandler).Methods("POST")
+	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/ready", handler.readyHandler).Methods("GET")
 	mux.HandleFunc("/repository/index", handler.repositoryIndexHandler).Methods("POST")
 
 	return handler

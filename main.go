@@ -1,21 +1,21 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ahr-i/triton-agent/handler"
 	"github.com/ahr-i/triton-agent/schedulerCommunicator/healthPinger"
 	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/corsController"
+	"github.com/ahr-i/triton-agent/src/logCtrlr"
 	"github.com/urfave/negroni"
 )
 
 func Init() {
-	log.Println("* (System) Initialize the agent.")
+	logCtrlr.Log("Initialize the agent.")
 
 	if setting.SchedulerActive {
-		log.Println("* (System) Use scheduler.")
+		logCtrlr.Log("Use scheduler.")
 		go healthPinger.Enter()
 	}
 }
@@ -32,6 +32,6 @@ func main() {
 	handler.UseHandler(mux)
 
 	// HTTP Server Start
-	log.Println("* (System) HTTP server start.")
+	logCtrlr.Log("HTTP server start.")
 	http.ListenAndServe(":"+setting.ServerPort, handler)
 }

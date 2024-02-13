@@ -3,11 +3,12 @@ package healthPinger
 import (
 	"bytes"
 	"encoding/json"
-	"log"
+	"errors"
 	"net/http"
 	"os"
 
 	"github.com/ahr-i/triton-agent/setting"
+	"github.com/ahr-i/triton-agent/src/logCtrlr"
 )
 
 type RequestData struct {
@@ -22,7 +23,7 @@ func postAlive() {
 
 	resp, _ := http.Post("http://"+setting.SchedulerUrl+"/alive", "application/json", bytes.NewBuffer(jsonData))
 	if resp == nil || resp.StatusCode != http.StatusOK {
-		log.Println("*** (ERROR) There is no scheduler.")
+		logCtrlr.DError(errors.New("There is no scheduler."))
 
 		os.Exit(1)
 	}

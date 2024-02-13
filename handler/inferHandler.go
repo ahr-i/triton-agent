@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ahr-i/triton-agent/src/errController"
 	"github.com/ahr-i/triton-agent/src/httpController"
+	"github.com/ahr-i/triton-agent/src/logCtrlr"
 	"github.com/ahr-i/triton-agent/tritonCommunicator"
 	"github.com/gorilla/mux"
 )
@@ -20,16 +20,16 @@ func (h *Handler) inferHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the request from the body
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		errController.ErrorMessage(err)
+		logCtrlr.Error(err)
 		return
 	}
-	log.Println("* (System) Request: ▽▽▽▽▽▽▽▽▽▽")
+	logCtrlr.Log("Request: ▽▽▽▽▽▽▽▽▽▽")
 	log.Println(string(body))
 
 	// Request to triton
 	response, err := tritonCommunicator.Inference(model, version, body)
 	if err != nil {
-		errController.ErrorMessage(err)
+		logCtrlr.Error(err)
 		return
 	}
 
