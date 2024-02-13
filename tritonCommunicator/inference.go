@@ -2,18 +2,19 @@ package tritonCommunicator
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/ahr-i/triton-agent/setting"
+	"github.com/ahr-i/triton-agent/src/logCtrlr"
 )
 
 /* Send a request to the Triton server and return the response. */
 func Inference(model string, version string, request []byte) ([]byte, error) {
-	log.Println("* (System) Request to triton server.")
+	logCtrlr.Log("Request to triton server.")
 	// URL setting.
-	url := "http://" + setting.TritonUrl + "/v2/models/" + model + "/versions/" + version + "/infer"
+	url := fmt.Sprintf("http://%s/v2/models/%s/versions/%s/infer", setting.TritonUrl, model, version)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(request))
 	if err != nil {
@@ -34,7 +35,7 @@ func Inference(model string, version string, request []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("* (System) Received an inference response from the Triton server.")
+	logCtrlr.Log("Received an inference response from the Triton server.")
 
 	return bodyBytes, nil
 }
