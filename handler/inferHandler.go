@@ -33,5 +33,5 @@ func (h *Handler) inferHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpController.JSON(&w, http.StatusOK, response)
+	httpController.JSON(w, http.StatusOK, response)
 }

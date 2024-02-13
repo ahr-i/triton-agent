@@ -13,5 +13,5 @@ func (h *Handler) repositoryIndexHandler(w http.ResponseWriter, r *http.Request)
 		panic(err)
 	}
 
-	httpController.JSON(&w, http.StatusOK, modelInformation)
+	httpController.JSON(w, http.StatusOK, modelInformation)
 }
