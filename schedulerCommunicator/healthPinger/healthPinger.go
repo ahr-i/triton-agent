@@ -5,15 +5,12 @@ import (
 	"time"
 
 	"github.com/ahr-i/triton-agent/setting"
-	"github.com/ahr-i/triton-agent/src/networkController"
 )
 
-var address string
+var port string
 
 func Enter() {
-	log.Println("* (System) Send information to the Scheduler.")
-
-	address = networkController.GetLocalIP() + ":" + setting.ServerPort
+	port = setting.ServerPort
 
 	alivePoster()
 }

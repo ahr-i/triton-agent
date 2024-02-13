@@ -11,11 +11,11 @@ import (
 )
 
 type RequestData struct {
-	Address string `json:"address"`
+	Port string `json:"port"`
 }
 
 func postAlive() {
-	jsonData, err := json.Marshal(RequestData{Address: address})
+	jsonData, err := json.Marshal(RequestData{Port: port})
 	if err != nil {
 		panic(err)
 	}

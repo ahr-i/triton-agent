@@ -6,7 +6,6 @@ import (
 
 	"github.com/ahr-i/triton-agent/handler"
 	"github.com/ahr-i/triton-agent/schedulerCommunicator/healthPinger"
-	"github.com/ahr-i/triton-agent/schedulerCommunicator/taskTokenManager"
 	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/corsController"
 	"github.com/urfave/negroni"
@@ -15,9 +14,10 @@ import (
 func Init() {
 	log.Println("* (System) Initialize the agent.")
 
-	taskTokenManager.Init()
-
-	go healthPinger.Enter()
+	if setting.SchedulerActive {
+		log.Println("* (System) Use scheduler.")
+		go healthPinger.Enter()
+	}
 }
 
 func main() {
