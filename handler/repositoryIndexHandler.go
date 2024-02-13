@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/ahr-i/triton-agent/src/httpController"
 	"github.com/ahr-i/triton-agent/tritonCommunicator"
 )
 
@@ -12,5 +13,5 @@ func (h *Handler) repositoryIndexHandler(w http.ResponseWriter, r *http.Request)
 		panic(err)
 	}
 
-	rend.JSON(w, http.StatusOK, string(modelInformation))
+	httpController.JSON(&w, http.StatusOK, modelInformation)
 }
