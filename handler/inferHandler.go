@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ahr-i/triton-agent/src/errController"
+	"github.com/ahr-i/triton-agent/src/httpController"
 	"github.com/ahr-i/triton-agent/tritonCommunicator"
 	"github.com/gorilla/mux"
 )
@@ -32,5 +33,5 @@ func (h *Handler) inferHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rend.JSON(w, http.StatusOK, string(response))
+	httpController.JSON(w, http.StatusOK, response)
 }
