@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"os"
 
 	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
@@ -23,8 +22,8 @@ func postAlive() {
 
 	resp, _ := http.Post("http://"+setting.SchedulerUrl+"/alive", "application/json", bytes.NewBuffer(jsonData))
 	if resp == nil || resp.StatusCode != http.StatusOK {
-		logCtrlr.DError(errors.New("There is no scheduler."))
+		logCtrlr.Error(errors.New("There is no scheduler."))
 
-		os.Exit(1)
+		//os.Exit(1)
 	}
 }
