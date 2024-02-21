@@ -40,7 +40,7 @@ func (h *Handler) inferHandler(w http.ResponseWriter, r *http.Request) {
 	// Send burst time to scheduler
 	burstTime := float64(endTime.Sub(startTime).Milliseconds()) / 1000
 	log.Printf("* (SYSTEM) Burst time: %f\n", burstTime)
-	callback.Callback(burstTime)
+	callback.Callback(burstTime, "", model, version)
 
 	httpController.JSON(w, http.StatusOK, response)
 }
