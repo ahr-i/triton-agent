@@ -8,11 +8,14 @@ import (
 	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/corsController"
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
+	"github.com/ahr-i/triton-agent/tritonController"
 	"github.com/urfave/negroni"
 )
 
 func Init() {
 	logCtrlr.Log("Initialize the agent.")
+
+	tritonController.Init(setting.ModelRepository)
 
 	if setting.SchedulerActive {
 		logCtrlr.Log("Use scheduler.")

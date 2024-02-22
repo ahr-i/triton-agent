@@ -16,15 +16,7 @@ func Inference(model string, version string, request []byte) ([]byte, error) {
 	// URL setting.
 	url := fmt.Sprintf("http://%s/v2/models/%s/versions/%s/infer", setting.TritonUrl, model, version)
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(request))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	// Triton Server Response
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(request))
 	if err != nil {
 		return nil, err
 	}
