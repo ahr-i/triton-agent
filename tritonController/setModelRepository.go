@@ -77,6 +77,8 @@ func polling(model string, version string) error {
 	logCtrlr.Log("Polling start - Model repository.")
 
 	for {
+		time.Sleep(1 * time.Second)
+
 		ready, err := tritonCommunicator.Ready(model, version)
 		if err != nil {
 			logCtrlr.Error(errors.New("triton server is not working"))
@@ -86,7 +88,6 @@ func polling(model string, version string) error {
 		if ready {
 			break
 		}
-		time.Sleep(2 * time.Second)
 	}
 
 	return nil
