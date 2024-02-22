@@ -16,6 +16,13 @@ import (
 func SetModelRepository(provider string, model string, version string) error {
 	log.Println("========== Model Repository ==========")
 	log.Println("Model repository:", provider)
+
+	if provider == modelRepository {
+		return nil
+	} else {
+		modelRepository = provider
+	}
+
 	modelRepositoryPath := fmt.Sprintf("%s/%s", "/models", provider)
 	makeFolder(modelRepositoryPath)
 
