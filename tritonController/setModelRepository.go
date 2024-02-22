@@ -2,6 +2,7 @@ package tritonController
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -74,12 +75,12 @@ func executeCommand(client *ssh.Client, command string) error {
 
 func polling(model string, version string) error {
 	logCtrlr.Log("Polling start - Model repository.")
-	time.Sleep(5 * time.Second)
 
 	for {
 		ready, err := tritonCommunicator.Ready(model, version)
 		if err != nil {
-			return err
+			logCtrlr.Error(errors.New("triton server is not working"))
+			continue
 		}
 
 		if ready {
