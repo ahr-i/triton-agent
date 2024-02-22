@@ -21,7 +21,7 @@ type requestData struct {
 
 /* This is the callback function sent to the scheduler. */
 /* Sends the burst time, which is the completion time of the inference. */
-func Callback(burstTime float64, id string, model string, version string) {
+func Callback(burstTime float64, provider string, model string, version string) {
 	// If you are not using a scheduler, ignore this function.
 	if !setting.SchedulerActive {
 		return
@@ -31,7 +31,7 @@ func Callback(burstTime float64, id string, model string, version string) {
 	request := requestData{
 		Port:      setting.ServerPort,
 		BurstTime: burstTime,
-		Id:        id,
+		Id:        provider,
 		Model:     model,
 		Version:   version,
 	}
