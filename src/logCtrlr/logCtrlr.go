@@ -13,5 +13,5 @@ func Error(err error) {
 }
 
 func Log(message string) {
-	log.Println("* (SYSTEM)" + message)
+	log.Println("* (SYSTEM)", message)
 }

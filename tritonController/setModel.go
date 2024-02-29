@@ -5,61 +5,73 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/ahr-i/triton-agent/modelStoreCommunicator"
 	"github.com/ahr-i/triton-agent/setting"
+	"github.com/ahr-i/triton-agent/src/logCtrlr"
 )
 
 func SetModel(provider string, model string, version string) error {
 	filePath := fmt.Sprintf("%s/%s", setting.ModelsPath, provider)
 
+	// Creating the provider folder.
+	// If the provider folder already exists, it will not be created.
+	logCtrlr.Log("Create provider folder.")
 	if err := makeFolder(filePath); err != nil {
 		return err
 	}
 
+	// downloading the model from the Model Store.
+	logCtrlr.Log("Request model download to the Model Store.")
 	modelFile, err := modelStoreCommunicator.GetModel(provider, model, version)
 	if err != nil {
 		return err
 	}
+	logCtrlr.Log("Successfully completed the model download.")
 
+	// Unzipping the file.
+	logCtrlr.Log("Unzip the model.")
 	zipReader, err := zip.NewReader(bytes.NewReader(modelFile), int64(len(modelFile)))
 	if err != nil {
 		return err
 	}
 
+	// Saving the model to the specified path.
+	log.Println("Saving the model.")
 	for _, file := range zipReader.File {
-		// 출력 경로 생성
+		// Creating the output path.
 		outputPath := filepath.Join(filePath, file.Name)
 
-		// 디렉토리인 경우 생성
+		// If it is a directory, create it.
 		if file.FileInfo().IsDir() {
 			os.MkdirAll(outputPath, os.ModePerm)
 			continue
 		}
 
-		// 파일 내용 읽기
+		// Read file contents.
 		fileInZip, err := file.Open()
 		if err != nil {
-			panic(err)
+			return err
 		}
 
-		// 경로에 해당하는 디렉토리 생성
+		// Create a directory corresponding to the path.
 		if err := os.MkdirAll(filepath.Dir(outputPath), os.ModePerm); err != nil {
-			panic(err)
+			return err
 		}
 
-		// 파일 생성 및 쓰기
+		// Create and write to a file.
 		outputFile, err := os.Create(outputPath)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		if _, err := io.Copy(outputFile, fileInZip); err != nil {
-			panic(err)
+			return err
 		}
 
-		// 파일 닫기
+		// Close the file.
 		fileInZip.Close()
 		outputFile.Close()
 	}

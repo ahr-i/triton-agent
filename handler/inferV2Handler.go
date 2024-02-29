@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"sync"
@@ -28,16 +28,18 @@ func (h *Handler) inferV2Handler(w http.ResponseWriter, r *http.Request) {
 	version := vars["version"]
 
 	// Extract the request from the body
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logCtrlr.Error(err)
+		rend.JSON(w, http.StatusBadRequest, nil)
 		return
 	}
 	printModelInfo(provider, model, version, string(body))
 
 	// Set model repository
-	if err := tritonController.SetModelRepository(provider, model, version); err != nil {
+	if err := tritonController.ChangeModelRepository(provider, model, version); err != nil {
 		logCtrlr.Error(err)
+		rend.JSON(w, http.StatusBadRequest, nil)
 		return
 	}
 
@@ -46,6 +48,7 @@ func (h *Handler) inferV2Handler(w http.ResponseWriter, r *http.Request) {
 	response, err := tritonCommunicator.Inference(model, version, body)
 	if err != nil {
 		logCtrlr.Error(err)
+		rend.JSON(w, http.StatusBadRequest, nil)
 		return
 	}
 	endTime := time.Now()
