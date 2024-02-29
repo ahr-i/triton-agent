@@ -19,12 +19,12 @@ func CreateHandler() *Handler {
 		Handler: mux,
 	}
 
-	mux.HandleFunc("/ping", handler.pingHandler).Methods("GET") // Ping Check
-	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferHandler).Methods("POST")
-	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/ready", handler.readyHandler).Methods("GET")
-	mux.HandleFunc("/repository/index", handler.repositoryIndexHandler).Methods("POST")
-	mux.HandleFunc("/provider/{provider:[a-z-_]+}/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferV2Handler).Methods("POST")
-	mux.HandleFunc("/serving", handler.servingHandler).Methods("POST")
+	mux.HandleFunc("/ping", handler.pingHandler).Methods("GET")                                                                           // Ping check
+	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferHandler).Methods("POST")                                // Inference version 1.0
+	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/ready", handler.readyHandler).Methods("GET")                                 // Model check
+	mux.HandleFunc("/repository/index", handler.repositoryIndexHandler).Methods("POST")                                                   // Get Triton repository index
+	mux.HandleFunc("/provider/{provider:[a-z-_]+}/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferV2Handler).Methods("POST") // Inference version 2.0
+	mux.HandleFunc("/serving", handler.servingHandler).Methods("POST")                                                                    // Model serving API
 
 	return handler
 }

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -20,9 +20,10 @@ func (h *Handler) inferHandler(w http.ResponseWriter, r *http.Request) {
 	version := vars["version"]
 
 	// Extract the request from the body
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logCtrlr.Error(err)
+		rend.JSON(w, http.StatusBadRequest, nil)
 		return
 	}
 	logCtrlr.Log("Request: ▽▽▽▽▽▽▽▽▽▽")
@@ -33,6 +34,7 @@ func (h *Handler) inferHandler(w http.ResponseWriter, r *http.Request) {
 	response, err := tritonCommunicator.Inference(model, version, body)
 	if err != nil {
 		logCtrlr.Error(err)
+		rend.JSON(w, http.StatusBadRequest, nil)
 		return
 	}
 	endTime := time.Now()

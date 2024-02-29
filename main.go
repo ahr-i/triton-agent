@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/negroni"
 )
 
-func Init() {
+func initialization() {
 	logCtrlr.Log("Initialize the agent.")
 
 	tritonController.Init(setting.ModelRepository)
@@ -23,13 +23,10 @@ func Init() {
 	}
 }
 
-func main() {
-	Init()
-
+func startServer() {
 	mux := handler.CreateHandler()
 	handler := negroni.Classic()
-
-	//defer mux.Close()
+	defer mux.Close()
 
 	handler.Use(corsController.SetCors("*", "GET, POST, PUT, DELETE", "*", true))
 	handler.UseHandler(mux)
@@ -37,4 +34,17 @@ func main() {
 	// HTTP Server Start
 	logCtrlr.Log("HTTP server start.")
 	http.ListenAndServe(":"+setting.ServerPort, handler)
+}
+
+func logs() {
+	logCtrlr.Log("Your models:")
+	tritonController.PrintModelRepository()
+}
+
+func main() {
+	initialization()
+
+	logs()
+
+	startServer()
 }
