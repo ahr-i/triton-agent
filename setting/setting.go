@@ -2,7 +2,7 @@ package setting
 
 /* ----- Server Setting ----- */
 const ServerPort string = "7000" // Edit this
-const ModelsPath string = "/models"
+const ModelsPath string = "./models"
 
 /* ----- Triton Server Setting ----- */
 const triton string = "100.0.0.2"
@@ -18,7 +18,7 @@ const SchedulerActive bool = false           // Edit this
 const SchedulerUrl string = "localhost:8000" // Edit this
 
 /* ----- Model Store Setting ----- */
-const ModelStoreUrl string = "localhost:8700" // Edit this
+var ModelStoreUrl string = "localhost:8700" // Edit this
 
 const ManagerActive bool = true
 const ManagerUrl string = "210.125.31.176:80"

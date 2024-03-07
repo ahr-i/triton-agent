@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
 	"github.com/ahr-i/triton-agent/tritonController"
 )
@@ -37,6 +38,9 @@ func (h *Handler) servingHandler(w http.ResponseWriter, r *http.Request) {
 	logCtrlr.Log("Request: ▽▽▽▽▽▽▽▽▽▽")
 	log.Println("Provider:", response.Provider)
 	log.Println("File name:", response.FileName)
+	log.Println("ModelStore Address:", response.Address)
+
+	setting.ModelStoreUrl = response.Address
 
 	// Initiating model download and folder setup according to the request.
 	if err := tritonController.SetModel(response.Provider, response.FileName, "1"); err != nil {

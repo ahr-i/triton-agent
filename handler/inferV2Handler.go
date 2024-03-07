@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/ahr-i/triton-agent/schedulerCommunicator/callback"
-	"github.com/ahr-i/triton-agent/schedulerCommunicator/healthPinger"
 	"github.com/ahr-i/triton-agent/src/httpController"
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
 	"github.com/ahr-i/triton-agent/tritonCommunicator"
@@ -25,7 +24,7 @@ func (h *Handler) inferV2Handler(w http.ResponseWriter, r *http.Request) {
 	model := vars["model"]
 	version := vars["version"]
 
-	healthPinger.UpdateTaskInfo_start(provider, model, version)
+	//healthPinger.UpdateTaskInfo_start(provider, model, version)
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -59,7 +58,7 @@ func (h *Handler) inferV2Handler(w http.ResponseWriter, r *http.Request) {
 	burstTime := float64(endTime.Sub(startTime).Milliseconds()) / 1000
 	log.Printf("* (SYSTEM) Burst time: %f\n", burstTime)
 	callback.Callback(burstTime, provider, model, version)
-	healthPinger.UpdateTaskInfo_end(provider, model, version)
+	//healthPinger.UpdateTaskInfo_end(provider, model, version)
 
 	httpController.JSON(w, http.StatusOK, response)
 

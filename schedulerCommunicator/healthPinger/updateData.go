@@ -1,5 +1,14 @@
 package healthPinger
 
+import (
+	"bytes"
+	"encoding/json"
+	"log"
+	"net/http"
+
+	"github.com/ahr-i/triton-agent/setting"
+)
+
 func UpdateTaskInfo_burstTime(burstTime float64, provider string, model string, version string) {
 	prevTaskInfo := model_info[provider+"@"+model][version]
 	var nextTaskInfo TaskInfo
@@ -36,6 +45,36 @@ func UpdateTaskInfo_end(provider string, model string, version string) {
 	}
 }
 
+type requestData struct {
+	Port    string `json:"port"`
+	Id      string `json:"id"`
+	Model   string `json:"model"`
+	Version string `json:"version"`
+}
+
 func UpdateModel(provider string, model string, version string) {
-	model_info[provider+"@"+model][version] = TaskInfo{AverageInferenceTime: 0, LoadedAmount: 0}
+	modelkey := provider + "@" + model
+	if _, exists := model_info[modelkey]; !exists {
+		model_info[modelkey] = make(map[string]TaskInfo)
+	}
+
+	model_info[modelkey][version] = TaskInfo{AverageInferenceTime: 0, LoadedAmount: 0}
+
+	request := requestData{
+		Port:    setting.ServerPort,
+		Id:      provider,
+		Model:   model,
+		Version: version,
+	}
+	jsonData, err := json.Marshal(request)
+	if err != nil {
+		panic(err)
+	}
+	//Manager에게 전달
+	log.Println("Manager에게 modelupdate 전달 :", request)
+	_, err = http.Post("http://"+setting.ManagerUrl+"/model/update", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Println("modelupdate정보 Manager에게 전달 실패 :", err)
+	}
+
 }
