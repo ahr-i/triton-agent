@@ -17,7 +17,7 @@ func initialization() {
 
 	tritonController.Init(setting.ModelRepository)
 
-	if setting.SchedulerActive {
+	if setting.ManagerActive {
 		logCtrlr.Log("Use scheduler.")
 		go healthPinger.Enter()
 	}

@@ -19,3 +19,6 @@ const SchedulerUrl string = "localhost:8000" // Edit this
 
 /* ----- Model Store Setting ----- */
 const ModelStoreUrl string = "localhost:8700" // Edit this
+
+const ManagerActive bool = true
+const ManagerUrl string = "210.125.31.176:80"

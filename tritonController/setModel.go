@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 
 	"github.com/ahr-i/triton-agent/modelStoreCommunicator"
+	"github.com/ahr-i/triton-agent/schedulerCommunicator/healthPinger"
 	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
 )
@@ -76,5 +77,6 @@ func SetModel(provider string, model string, version string) error {
 		outputFile.Close()
 	}
 
+	healthPinger.UpdateModel(provider, model, version)
 	return nil
 }
