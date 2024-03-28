@@ -72,11 +72,12 @@ func SetModel(provider string, model string, version string, filename string, ch
 	t.DownloadAll()
 
 	// 파일 다운로드 대기
-	<-cl.WaitAll()
+	if cl.WaitAll() {
 
-	log.Printf("Downloaded %s", t.Name())
-	*channel <- fileName
+		log.Printf("Downloaded %s", t.Name())
+		*channel <- fileName
 
-	healthPinger.UpdateModel(provider, model, version)
+		healthPinger.UpdateModel(provider, model, version)
+	}
 	return nil
 }
