@@ -34,9 +34,9 @@ func (pr *ProgressReader) Read(p []byte) (int, error) {
 }
 
 /* downloading the model from the Model Store. */
-func GetModel(provider string, model string, version string) ([]byte, error) {
+func GetModel(provider string, model string, version string, filename string) ([]byte, error) {
 	log.Println("Starting model download.")
-	url := fmt.Sprintf("http://%s/getModel?id=%s&filename=%s", setting.ModelStoreUrl, provider, model)
+	url := fmt.Sprintf("http://%s/getModel?id=%s&filename=%s", setting.ModelStoreUrl, provider, filename)
 
 	// Sending a download request to the model store.
 	resp, err := http.Get(url)

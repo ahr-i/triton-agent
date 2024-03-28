@@ -1,5 +1,5 @@
 # Use Golang Version
-FROM golang:latest
+FROM golang:latest as builder
 
 # Working Directory Setting
 WORKDIR /server
@@ -13,6 +13,11 @@ COPY . .
 
 # Build
 RUN go build -o main .
+
+FROM nvidia/cuda:11.8.0-base-ubuntu22.04
+
+WORKDIR /server
+COPY --from=builder /server/main .
 
 # Execute
 CMD ["./main"]

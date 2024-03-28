@@ -32,6 +32,7 @@ func Enter() {
 	}
 
 	gpuName = strings.TrimSpace(string(output))
+	log.Println("GPU NAME :", gpuName)
 
 	alivePoster()
 }
@@ -47,12 +48,17 @@ func alivePoster() {
 
 	go func() {
 		log.Println("승인 중")
-		_, err = ln.Accept()
+		conn, err := ln.Accept()
 		if err != nil {
 			log.Fatal("Acppea", err)
 		}
 
 		log.Println("헬스체킹용 tcp 연결 성공")
+
+		for {
+			conn.Write([]byte("hi"))
+			time.Sleep((time.Second * 1))
+		}
 	}()
 
 	for {

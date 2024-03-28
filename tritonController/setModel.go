@@ -15,7 +15,7 @@ import (
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
 )
 
-func SetModel(provider string, model string, version string) error {
+func SetModel(provider string, model string, version string, filename string) error {
 	filePath := fmt.Sprintf("%s/%s", setting.ModelsPath, provider)
 
 	// Creating the provider folder.
@@ -27,7 +27,7 @@ func SetModel(provider string, model string, version string) error {
 
 	// downloading the model from the Model Store.
 	logCtrlr.Log("Request model download to the Model Store.")
-	modelFile, err := modelStoreCommunicator.GetModel(provider, model, version)
+	modelFile, err := modelStoreCommunicator.GetModel(provider, model, version, filename)
 	if err != nil {
 		return err
 	}

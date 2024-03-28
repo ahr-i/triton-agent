@@ -10,6 +10,10 @@ import (
 )
 
 func UpdateTaskInfo_burstTime(burstTime float64, provider string, model string, version string) {
+	if _, exists := model_info[provider+"@"+model]; !exists {
+		model_info[provider+"@"+model] = make(map[string]TaskInfo)
+	}
+
 	prevTaskInfo := model_info[provider+"@"+model][version]
 	var nextTaskInfo TaskInfo
 

@@ -11,7 +11,6 @@ import (
 	"github.com/ahr-i/triton-agent/src/httpController"
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
 	"github.com/ahr-i/triton-agent/tritonCommunicator"
-	"github.com/ahr-i/triton-agent/tritonController"
 	"github.com/gorilla/mux"
 )
 
@@ -37,12 +36,12 @@ func (h *Handler) inferV2Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	printModelInfo(provider, model, version, string(body))
 
-	// Set model repository
-	if err := tritonController.ChangeModelRepository(provider, model, version); err != nil {
-		logCtrlr.Error(err)
-		rend.JSON(w, http.StatusBadRequest, nil)
-		return
-	}
+	// // Set model repository
+	// if err := tritonController.ChangeModelRepository(provider, model, version); err != nil {
+	// 	logCtrlr.Error(err)
+	// 	rend.JSON(w, http.StatusBadRequest, nil)
+	// 	return
+	// }
 
 	// Request to tritons
 	startTime := time.Now()
@@ -61,6 +60,7 @@ func (h *Handler) inferV2Handler(w http.ResponseWriter, r *http.Request) {
 	//healthPinger.UpdateTaskInfo_end(provider, model, version)
 
 	httpController.JSON(w, http.StatusOK, response)
+	//httpController.JSON(w, http.StatusOK, nil)
 
 }
 
@@ -70,4 +70,10 @@ func printModelInfo(provider string, model string, version string, request strin
 	log.Println("Model:", model)
 	log.Println("Version:", version)
 	log.Println("Request:", request)
+}
+
+func (h *Handler) testInferV2Handler(w http.ResponseWriter, r *http.Request) {
+	//요청받으면 랜덤한 인퍼런스 타임으로 결과값 돌려주기.
+
+	//랜덤한 확률로 인퍼런스 실패하기
 }
