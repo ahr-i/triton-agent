@@ -1,10 +1,7 @@
 package tritonController
 
 import (
-	"archive/zip"
-	"bytes"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -17,6 +14,7 @@ import (
 
 func SetModel(provider string, model string, version string, filename string) error {
 	filePath := fmt.Sprintf("%s/%s", setting.ModelsPath, provider)
+	fileName := fmt.Sprintf("%s@%s<%s>.torrent", provider, model, version)
 
 	// Creating the provider folder.
 	// If the provider folder already exists, it will not be created.
@@ -33,49 +31,48 @@ func SetModel(provider string, model string, version string, filename string) er
 	}
 	logCtrlr.Log("Successfully completed the model download.")
 
-	// Unzipping the file.
-	logCtrlr.Log("Unzip the model.")
-	zipReader, err := zip.NewReader(bytes.NewReader(modelFile), int64(len(modelFile)))
-	if err != nil {
+	// Create a directory corresponding to the path.
+	if err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
 		return err
 	}
 
-	// Saving the model to the specified path.
-	log.Println("Saving the model.")
-	for _, file := range zipReader.File {
-		// Creating the output path.
-		outputPath := filepath.Join(filePath, file.Name)
-
-		// If it is a directory, create it.
-		if file.FileInfo().IsDir() {
-			os.MkdirAll(outputPath, os.ModePerm)
-			continue
-		}
-
-		// Read file contents.
-		fileInZip, err := file.Open()
-		if err != nil {
-			return err
-		}
-
-		// Create a directory corresponding to the path.
-		if err := os.MkdirAll(filepath.Dir(outputPath), os.ModePerm); err != nil {
-			return err
-		}
-
-		// Create and write to a file.
-		outputFile, err := os.Create(outputPath)
-		if err != nil {
-			return err
-		}
-		if _, err := io.Copy(outputFile, fileInZip); err != nil {
-			return err
-		}
-
-		// Close the file.
-		fileInZip.Close()
-		outputFile.Close()
+	// Create and write to a file.
+	file, err := os.Create(filePath)
+	if err != nil {
+		return err
 	}
+	file.Write(modelFile)
+
+	// File Download by Torrent
+	// 토렌트 클라이언트 설정
+	cfg := torrent.NewDefaultClientConfig()
+	cfg.Seed = true // 시딩 활성화
+
+	// 토렌트 클라이언트 생성
+	cl, err := torrent.NewClient(cfg)
+	if err != nil {
+		log.Fatalf("error creating client: %s", err)
+	}
+	defer cl.Close()
+
+	// 토렌트 파일 추가
+	torrentPath := filePath + "/" + fileName // 여기에 토렌트 파일 경로 입력
+	metaInfo, err := metainfo.LoadFromFile(torrentPath)
+	if err != nil {
+		log.Fatalf("error loading torrent file: %s", err)
+	}
+	t, err := cl.AddTorrent(metaInfo)
+	if err != nil {
+		log.Fatalf("error adding torrent: %s", err)
+	}
+
+	<-t.GotInfo() // 토렌트 정보를 받을 때까지 대기
+	t.DownloadAll()
+
+	// 파일 다운로드 대기
+	<-cl.WaitAll()
+
+	log.Printf("Downloaded %s", t.Name())
 
 	healthPinger.UpdateModel(provider, model, version)
 	return nil

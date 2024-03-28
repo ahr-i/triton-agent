@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/ahr-i/triton-agent/tritonController"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 )
@@ -18,6 +19,11 @@ func CreateHandler() *Handler {
 	handler := &Handler{
 		Handler: mux,
 	}
+
+	downloaded := make(chan string)
+	downloadedP := &downloaded
+
+	go tritonController.Seeding("filePath", downloadedP)
 
 	mux.HandleFunc("/ping", handler.pingHandler).Methods("GET")                                                                           // Ping check
 	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferHandler).Methods("POST")                                // Inference version 1.0
