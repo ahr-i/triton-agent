@@ -3,7 +3,9 @@ package handler
 import (
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -73,7 +75,29 @@ func printModelInfo(provider string, model string, version string, request strin
 }
 
 func (h *Handler) testInferV2Handler(w http.ResponseWriter, r *http.Request) {
-	//요청받으면 랜덤한 인퍼런스 타임으로 결과값 돌려주기.
+	vars := mux.Vars(r)
+	provider := vars["provider"]
+	model := vars["model"]
+	version := vars["version"]
 
-	//랜덤한 확률로 인퍼런스 실패하기
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	//요청받으면 랜덤한 인퍼런스 타임으로 결과값 돌려주기.
+	inferTime := getRandNum(500, 10000)
+	time.Sleep(time.Millisecond * time.Duration(inferTime))
+
+	//랜덤한 확률로 인퍼런스 중 fault상황
+	randRate := rand.Float64()
+	if randRate < 0.1 {
+		os.Exit(1)
+	}
+
+	//정상 수행 후 응답 상황
+	burstTime := float64(inferTime) / 1000
+	callback.Callback(burstTime, provider, model, version)
+}
+
+func getRandNum(min int, max int) int {
+	return rand.Intn(max-min+1) + min
 }

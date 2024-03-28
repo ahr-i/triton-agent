@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/ahr-i/triton-agent/handler"
 	"github.com/ahr-i/triton-agent/schedulerCommunicator/healthPinger"
@@ -18,7 +19,7 @@ func initialization() {
 	tritonController.Init(setting.ModelRepository)
 
 	if setting.ManagerActive {
-		logCtrlr.Log("Use scheduler.")
+		logCtrlr.Log("Use manager.")
 		go healthPinger.Enter()
 	}
 }
@@ -46,5 +47,25 @@ func main() {
 
 	logs()
 
+	go test()
+
 	startServer()
+}
+
+func test() {
+	time.Sleep(time.Millisecond * 1000)
+
+	type testModel struct {
+		Provider string
+		Name     string
+		Version  string
+	}
+
+	testModels := []testModel{
+		{"meta", "Llama-2-7B-Chat", "1"},
+	}
+
+	for _, model := range testModels {
+		healthPinger.UpdateModel(model.Provider, model.Name, model.Version)
+	}
 }
