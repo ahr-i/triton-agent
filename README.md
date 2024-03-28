@@ -1,5 +1,5 @@
 # Triton Agent
-This is the agent code managing the Triton container.  
+This is the agent code managing the Triton container.   
 
 ## 1. Docker Start
 ### 1.1 Download
