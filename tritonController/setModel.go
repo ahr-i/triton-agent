@@ -10,9 +10,11 @@ import (
 	"github.com/ahr-i/triton-agent/schedulerCommunicator/healthPinger"
 	"github.com/ahr-i/triton-agent/setting"
 	"github.com/ahr-i/triton-agent/src/logCtrlr"
+	"github.com/anacrolix/torrent"
+	"github.com/anacrolix/torrent/metainfo"
 )
 
-func SetModel(provider string, model string, version string, filename string) error {
+func SetModel(provider string, model string, version string, filename string, channel *chan string) error {
 	filePath := fmt.Sprintf("%s/%s", setting.ModelsPath, provider)
 	fileName := fmt.Sprintf("%s@%s<%s>.torrent", provider, model, version)
 
@@ -37,7 +39,7 @@ func SetModel(provider string, model string, version string, filename string) er
 	}
 
 	// Create and write to a file.
-	file, err := os.Create(filePath)
+	file, err := os.Create(filePath + fileName)
 	if err != nil {
 		return err
 	}
@@ -73,6 +75,7 @@ func SetModel(provider string, model string, version string, filename string) er
 	<-cl.WaitAll()
 
 	log.Printf("Downloaded %s", t.Name())
+	*channel <- fileName
 
 	healthPinger.UpdateModel(provider, model, version)
 	return nil

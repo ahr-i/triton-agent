@@ -21,16 +21,18 @@ func CreateHandler() *Handler {
 	}
 
 	downloaded := make(chan string)
-	downloadedP := &downloaded
+	channel := &downloaded
 
-	go tritonController.Seeding("filePath", downloadedP)
+	go tritonController.Seeding("filePath", channel)
 
 	mux.HandleFunc("/ping", handler.pingHandler).Methods("GET")                                                                           // Ping check
 	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferHandler).Methods("POST")                                // Inference version 1.0
 	mux.HandleFunc("/model/{model:[a-z-_]+}/{version:[0-9]+}/ready", handler.readyHandler).Methods("GET")                                 // Model check
 	mux.HandleFunc("/repository/index", handler.repositoryIndexHandler).Methods("POST")                                                   // Get Triton repository index
 	mux.HandleFunc("/provider/{provider:[a-z-_]+}/model/{model:[a-z-_]+}/{version:[0-9]+}/infer", handler.inferV2Handler).Methods("POST") // Inference version 2.0
-	mux.HandleFunc("/serving", handler.servingHandler).Methods("POST")                                                                    // Model serving API
+	mux.HandleFunc("/serving", func(w http.ResponseWriter, r *http.Request) {
+		handler.servingHandler(w, r, channel)
+	}).Methods("POST") // Model serving API
 
 	return handler
 }
