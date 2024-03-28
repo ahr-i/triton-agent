@@ -20,7 +20,7 @@ type servingInformation struct {
 }
 
 /* Downloading the model upon request. */
-func (h *Handler) servingHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) servingHandler(w http.ResponseWriter, r *http.Request, channel *chan string) {
 	// Reading the request body.
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -47,7 +47,7 @@ func (h *Handler) servingHandler(w http.ResponseWriter, r *http.Request) {
 	setting.ModelStoreUrl = response.Address
 
 	// Initiating model download and folder setup according to the request.
-	if err := tritonController.SetModel(response.Provider, response.ModelName, response.Version, response.FileName); err != nil {
+	if err := tritonController.SetModel(response.Provider, response.ModelName, response.Version, response.FileName, channel); err != nil {
 		logCtrlr.Error(err)
 		rend.JSON(w, http.StatusBadRequest, nil)
 		return
