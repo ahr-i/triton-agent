@@ -30,9 +30,10 @@ func ChangeModelRepository(provider string, model string, version string) error 
 	makeFolder(modelRepositoryPath)
 
 	// Check model.
+	PrintModelRepository()
 	if exist := CheckModel(provider, model); !exist {
 		logCtrlr.Log("Model is not exist.")
-		if err := SetModel(provider, model, "1"); err != nil {
+		if err := SetModel(provider, model+".zip", "1"); err != nil {
 			return nil
 		}
 	}
